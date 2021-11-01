@@ -1,5 +1,6 @@
 import csv
 import logging
+import sys
 import os
 import psutil
 import pyautogui
@@ -16,7 +17,9 @@ global ONGOING_MEETING
 global VIDEO_PANEL_HIDED
 
 logging.basicConfig(
-    format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
+    stream=sys.stdout,
+    format='%(asctime)s %(levelname)s %(message)s', 
+    level=logging.INFO)
 
 # Turn DEBUG on:
 #   - screenshot on error
@@ -279,6 +282,7 @@ def check_error():
             if pyautogui.locateCenterOnScreen(os.path.join(
                     IMG_PATH, 'join_meeting.png'), confidence=0.9) is not None:
                 logging.error("Invalid meeting id!")
+                logging.info("Next meeting scheduled for %s." % schedule.next_run().strftime("%A at %H:%M") )
                 return False
         else:
             return True
@@ -286,6 +290,7 @@ def check_error():
     if pyautogui.locateCenterOnScreen(os.path.join(
             IMG_PATH, 'authorized_attendees_only.png'), confidence=0.9) is not None:
         logging.error("This meeting is for authorized attendees only!")
+        logging.info("Next meeting scheduled for %s." % schedule.next_run().strftime("%A at %H:%M") )
         return False
 
     return True
@@ -754,6 +759,7 @@ def join(meet_id, meet_pw, duration, description):
         time.sleep(5)
 
     logging.info("Meeting ends at %s" % datetime.now())
+    logging.info("Next meeting scheduled for %s." % schedule.next_run().strftime("%A at %H:%M") )
 
     # Close everything
     if DEBUG and ffmpeg_debug is not None:
@@ -866,6 +872,7 @@ def setup_schedule():
                 eval(cmd)
                 line_count += 1
         logging.info("Added %s meetings to schedule." % line_count)
+        logging.info("Next meeting scheduled for %s." % schedule.next_run().strftime("%A at %H:%M") )
 
 
 def main():
@@ -886,7 +893,3 @@ if __name__ == '__main__':
 while True:
     schedule.run_pending()
     time.sleep(1)
-    time_of_next_run = schedule.next_run()
-    time_now = datetime.now()
-    remaining = time_of_next_run - time_now
-    print(f"Next meeting in {remaining}", end="\r", flush=True)
