@@ -34,9 +34,9 @@ RUN apt-get update && \
         bzip2 \
         tzdata && \
 # Generate locales for en_US.UTF-8
-    locale-gen en_US.UTF-8 && \
+    locale-gen en_US.UTF-8
 # Install tigervnc
-    wget -q -O tigervnc-1.10.0.x86_64.tar.gz https://sourceforge.net/projects/tigervnc/files/stable/1.10.0/tigervnc-1.10.0.x86_64.tar.gz && \
+RUN wget -q -O tigervnc-1.10.0.x86_64.tar.gz https://sourceforge.net/projects/tigervnc/files/stable/1.10.0/tigervnc-1.10.0.x86_64.tar.gz && \
     tar xz -f tigervnc-1.10.0.x86_64.tar.gz --strip 1 -C / && \
     rm -rf tigervnc-1.10.0.x86_64.tar.gz && \
 # Install xfce ui
